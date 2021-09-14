@@ -40,6 +40,7 @@ exports.getOneSauce = (req, res, next) => {
      .catch(error => res.status(404).json({ error}));
  };
 
+ //suppression d'une sauce et du fichier image
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id})
         .then(sauce => {
@@ -51,7 +52,88 @@ exports.deleteSauce = (req, res, next) => {
             });
         })
         .catch(error => res.status(500).json({ error}));
-    
 };
+
+//Définit le statut "like" d'une sauce
+//Définit le statut "j'aime" d'une sauce
+exports.likeSauce = (req, res, next) => {
+    Sauce.findOne({
+      _id: req.params.id
+    }).then(
+      (sauce) => {
+        const userId = req.body.userId; 
+        const like = req.body.like;
+        //si l'utilisateur clique sur j'aime
+        if (like == 1) { 
+          // on vérifie que l'utilisateur n'a pas déjà cliqué sur j'aime
+          if (sauce.usersLiked.indexOf(userId) !== 1) { 
+            sauce.likes += 1;
+            sauce.usersLiked.push(userId);
+          }
+          //on met à jour l'objet Sauce
+          Sauce.updateOne({_id:req.params.id}, sauce)
+          .then(sauce => {
+            res.status(200).json(sauce);
+          })
+          .catch(
+            (error) => {
+              res.status(500).json({
+                error: error
+              });
+          })
+        //si l'utilisateur clique sur je n'aime pas
+        } else if (like == -1) { 
+          //on vérifie que l'utilisateur n'a pas déjà cliqué sur je n'aime pas
+          if (sauce.usersDisliked.indexOf(userId) !== 1) { 
+            sauce.dislikes += 1;
+            sauce.usersDisliked.push(userId);
+          }
+          //on met à jour l'objet Sauce
+          Sauce.updateOne({_id:req.params.id}, sauce)
+          .then(sauce => {
+            res.status(200).json(sauce);
+          })
+          .catch(
+            (error) => {
+              res.status(500).json({
+                error: error
+              });
+          })
+        //si l'utilisateur veut annuler son "j'aime" ou "je n'aime pas"
+        } else if (like == 0) { 
+          // on vérifie si l'utilisateur se trouve dans le tableau des usersLiked
+          if (sauce.usersLiked.indexOf(userId) !== -1) { 
+            // on retire -1 du décompte de "j'aime"
+            sauce.likes -= 1; 
+            // on retire l'userId du tableau de usersLiked
+            sauce.usersLiked.splice(userId, 1); 
+          // si l'utilisateur ne se trouve pas dans le tableau des usersLiked
+          } else { 
+            //on retire -1 du décompte de "je n'aime pas"
+            sauce.dislikes -= 1; 
+            // on retire l'userId du tableau de usersDisliked
+            sauce.usersDisliked.splice(userId, 1); 
+          }
+          // on met à jour notre objet sauce
+          Sauce.updateOne({_id:req.params.id}, sauce)
+          .then(sauce => {
+            res.status(200).json(sauce);
+          })
+          .catch(
+            (error) => {
+              res.status(500).json({
+                error: error
+              });
+          })
+        }
+      }
+    ).catch(
+      (error) => {
+        res.status(404).json({
+          error: error
+        });
+      }
+    );
+  };
 
 
