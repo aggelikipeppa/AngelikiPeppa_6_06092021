@@ -8,7 +8,8 @@ const userSchema = mongoose.Schema({
     password: {type: String, required: true}
 });
 
-userSchema.plugin(uniqueValidator);
+//pour qu'il ne soit pas possible d'enregistrer 2 fois la même adresse mail dans la base de donnée
+userSchema.plugin(uniqueValidator); // on applique la méthode plugin pour controler le mail
 
 module.exports = mongoose.model('User', userSchema);
 

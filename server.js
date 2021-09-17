@@ -5,7 +5,14 @@ const app = require('./app'); //importer l'application app.js
 //--------------------------------------
 
 const normalizePort = val => {
-  const port = parseInt(val, 10);
+const port = parseInt(val, 10);
+
+const dotenv = require('dotenv');//variable d'environnement
+
+const result = dotenv.config();
+if (result.error) {
+  throw result.error
+} 
 
   if (isNaN(port)) {
     return val;

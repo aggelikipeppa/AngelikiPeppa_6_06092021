@@ -1,3 +1,5 @@
+//multer pour gérer les uploads des images
+//middleware pour enregistrer les images qui arrive du frontend
 const multer = require('multer');
 
 //résolution de l'extension de fichier
