@@ -3,8 +3,8 @@ const mongoose = require('mongoose');  //import mongoose
 const helmet = require('helmet');//import Helmet, protection against sql and xss injection
 const cors = require("cors");//Pour gérer les problèmes de CORS(Cross-Origin Request Sharing)
 const dotenv = require("dotenv");
-  
 dotenv.config();
+const mongoSanitize = require("express-mongo-sanitize");
 const path = require('path');
 
 
@@ -31,8 +31,18 @@ app.use((req, res, next) => {
 });
 
 
+// middleware général 2 qui transforme le corps des requetes en JSON
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+//protection injection sql
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
+
+//permet de récupérer les images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use(cors());

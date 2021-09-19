@@ -1,18 +1,13 @@
 const http = require('http'); //importer le package HTTP de Node.js pour avoir des outils pour créer le serveur
 const app = require('./app'); //importer l'application app.js
 
+const dotenv = require('dotenv');//variable d'environnement
 
+const result = dotenv.config();
 //--------------------------------------
 
 const normalizePort = val => {
 const port = parseInt(val, 10);
-
-const dotenv = require('dotenv');//variable d'environnement
-
-const result = dotenv.config();
-if (result.error) {
-  throw result.error
-} 
 
   if (isNaN(port)) {
     return val;

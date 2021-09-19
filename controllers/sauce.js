@@ -3,8 +3,18 @@ const fs = require('fs');   // accéder au système de fichier
 
 
 exports.createSauce = (req, res, next) => {
-    const sauceObject = JSON.parse(req.body.sauces);
-    delete sauceObject._id; 
+  
+  /*console.log("--->controllers/sauce.js CONTENU de req.body");
+  console.log(req.body);
+
+  console.log("--->controllers/sauce.js CONTENU de req.body.sauce");  
+  console.log(req.body.sauce);*/
+
+  const sauceObject = JSON.parse(req.body.sauce);
+
+  /*console.log("--->controllers/sauce.js CONTENU de sauceObject après JSON.parse");  
+  console.log(sauceObject);*/
+    delete sauceObject._id;
     const sauce = new Sauce({
         ...sauceObject,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
